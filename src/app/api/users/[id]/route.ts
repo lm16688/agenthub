@@ -19,10 +19,10 @@ const mockUsers = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const userId = params.id;
-  const user = mockUsers[userId as keyof typeof mockUsers];
+  const { id } = await params;
+  const user = mockUsers[id as keyof typeof mockUsers];
 
   if (!user) {
     return NextResponse.json(
@@ -39,10 +39,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = params.id;
+    const { id } = await params;
     const body = await request.json();
 
     // TODO: 更新用户信息
@@ -50,7 +50,7 @@ export async function PUT(
 
     return NextResponse.json({
       success: true,
-      data: { ...mockUsers[userId as keyof typeof mockUsers], ...body },
+      data: { ...mockUsers[id as keyof typeof mockUsers], ...body },
       message: "User updated successfully",
     });
   } catch (error) {

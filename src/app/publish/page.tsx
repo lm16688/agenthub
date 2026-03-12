@@ -51,8 +51,7 @@ export default function PublishAgentPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                required
-={formData.name}
+                required={true}
               />
             </div>
 
