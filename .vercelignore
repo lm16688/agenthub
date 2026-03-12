@@ -4,13 +4,17 @@ node_modules
 .next
 .git
 dist
-build
 coverage
 .nyc_output
-.vercel
+
+# 开发数据库文件（部署时不需要）
+dev.db
+*.db
+*.db-journal
+
+# 日志文件
 *.log
-.env
 .DS_Store
 
-# Prisma
+# Prisma 迁移文件
 prisma/migrations/*.sql

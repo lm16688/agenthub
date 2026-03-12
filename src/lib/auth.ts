@@ -48,19 +48,19 @@ export const authOptions: NextAuthOptions = {
     }),
 
     // Google登录（可选）
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+    ...(process.env.NEXTAUTH_GOOGLE_ID && process.env.NEXTAUTH_GOOGLE_SECRET
       ? [GoogleProvider({
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          clientId: process.env.NEXTAUTH_GOOGLE_ID,
+          clientSecret: process.env.NEXTAUTH_GOOGLE_SECRET,
         })]
       : []
     ),
 
     // GitHub登录（可选）
-    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+    ...(process.env.NEXTAUTH_GITHUB_ID && process.env.NEXTAUTH_GITHUB_SECRET
       ? [GithubProvider({
-          clientId: process.env.GITHUB_CLIENT_ID,
-          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          clientId: process.env.NEXTAUTH_GITHUB_ID,
+          clientSecret: process.env.NEXTAUTH_GITHUB_SECRET,
         })]
       : []
     ),
