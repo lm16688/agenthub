@@ -1,18 +1,7 @@
-import { defineConfig, globalIgnores } from "@eslint/js";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import { nextDefaultEsLint } from "eslint-config-next";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
+const config = nextDefaultEsLint({
+  // 你可以在这里添加自定义规则
+});
 
-export default eslintConfig;
+export default config;
