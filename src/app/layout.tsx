@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { SessionProvider } from "next-auth/react"
+import Providers from "@/components/providers";
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
@@ -23,7 +23,7 @@ export default async function RootLayout({
   return (
     <html lang="zh-CN">
       <body className={cn(inter.className, "min-h-screen bg-background font-sans antialiased")}>
-        <SessionProvider session={session}>
+        <Providers session={session}>
           <div className="flex min-h-screen flex-col">
             {/* 导航栏 */}
             <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -62,7 +62,7 @@ export default async function RootLayout({
                         <a href="/login" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-9 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground">
                           登录
                         </a>
-                        <a href="/register" className="inline-flex items-center justify-center whitespace-ars nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-9 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                        <a href="/register" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-9 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90">
                           注册
                         </a>
                       </>
@@ -99,7 +99,7 @@ export default async function RootLayout({
               </div>
             </footer>
           </div>
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );
