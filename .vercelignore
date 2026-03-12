@@ -1,0 +1,16 @@
+# Vercel 部署时忽略的文件
+
+node_modules
+.next
+.git
+dist
+build
+coverage
+.nyc_output
+.vercel
+*.log
+.env
+.DS_Store
+
+# Prisma
+prisma/migrations/*.sql
