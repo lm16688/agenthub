@@ -1,231 +1,241 @@
-import { notFound } from "next/navigation";
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const mockAgents: Record<string, any> = {
-  "meme-coin-analyzer": {
-    id: "1",
+export default function AgentDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  // Mock 数据
+  const mockAgent = {
+    id: "agent-1",
     name: "Meme Coin Analyzer",
     slug: "meme-coin-analyzer",
-    description: "智能分析pump.fun上的Meme币，基于社区活跃度和叙事强度筛选高潜力代币。支持实时数据抓取、社区热度追踪、风险评估等功能。",
-    category: "加密货币",
-    tags: ["crypto", "meme", "analysis", "trading"],
-    prompt: `分析pump.fun上的Meme币：
+    description: "分析 Meme 币的市场趋势、社区活跃度和价格走势",
+    category: "crypto",
+    tags: "crypto, meme, analysis, trading",
+    prompt: `分析任务：Meme 币市场分析
 
-1. 数据收集
-   - 获取代币基本信息
-   - 抓取社交媒体讨论
-   - 分析社区活跃度
+步骤1：获取市场数据
+- 从 pump.fun 获取最新的 Meme 币列表
+- 查询价格数据（如有）
+- 查取社交媒体热度（X/Twitter）
 
-2. 叙事分析
-   - 识别代币叙事
-   - 评估叙事强度
-   - 判断趋势方向
+步骤2：数据分析
+- 评估市场热度（交易量、价格波动）
+- 分析社区活跃度（发帖数量、互动率）
+- 识别潜在风险
 
-3. 风险评估
-   - 分析市值变化
-   - 评估流动性风险
-   - 识别潜在问题
+步骤3：生成报告
+- 按市场热度排序
+- 提供买入/卖出建议
+- 标注风险等级
 
-4. 生成报告
-   - 综合评分
-   - 投资建议
-   - 关键指标`,
+输出要求：
+- 格式：JSON 或 Markdown 表格
+- 内容：包含排名、价格、市值、建议
+- 风险：高/中/低风险分类`,
     version: "1.0.0",
-    likes: 128,
-    views: 1256,
-    installs: 56,
+    isPublic: true,
+    views: 1234,
+    likes: 89,
+    installs: 45,
     authorId: "user-1",
-    author: { name: "newborn", avatar: "🤖" },
-    isPublic: true,
-    isFeatured: true,
-    createdAt: "2026-03-10T10:00:00Z",
-  },
-  "content-writer": {
-    id: "2",
-    name: "Content Writer",
-    slug: "content-writer",
-    description: "AI内容写作助手，支持多种风格和格式，帮助你快速创建高质量内容。适用于小红书、公众号、抖音等多种平台。",
-    category: "内容创作",
-    tags: ["writing", "content", "ai", "social"],
-    prompt: "根据用户需求生成高质量内容...",
-    version: "2.1.0",
-    likes: 256,
-    views: 2341,
-    installs: 89,
-    authorId: "user-2",
-    author: { name: "AI Assistant", avatar: "🤖" },
-    isPublic: true,
-    isFeatured: false,
-    createdAt: "2026-03-09T15:30:00Z",
-  },
-};
+    author: {
+      id: "user-1",
+      name: "newborn",
+      avatar: "🤖",
+      bio: "AI Agent开发者，专注于加密货币和数据分析",
+    },
+    ogImage: "https://images.unsplash.com/photo-1639762684856-9d312d85dab4e065d0875423?w=800&h=400",
+    createdAt: "2026-03-01T00:00:00Z",
+    updatedAt: "2026-03-12T00:00:00Z",
+  };
 
-interface AgentPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
-
-export default async function AgentPage({ params }: AgentPageProps) {
-  const { slug } = await params;
-  const agent = mockAgents[slug];
-
-  if (!agent) {
-    notFound();
+  if (params.slug !== mockAgent.slug) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Agent 不存在</h1>
+          <p className="text-muted-foreground mb-6">
+            找不到 Slug 为 {params.slug} 的 Agent
+          </p>
+          <Button asChild>
+            <Link href="/agents">
+              返回 Agents 列表
+            </Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container py-8">
-      {/* 面包屑导航 */}
-      <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-        <Link href="/" className="hover:text-foreground">首页</Link>
-        <span>/</span>
-        <Link href="/agents" className="hover:text-foreground">Agents</Link>
-        <span>/</span>
-        <span className="text-foreground">{agent.name}</span>
-      </nav>
-
-      {/* Agent头部 */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-3xl font-bold">{agent.name}</h1>
-              <Badge variant="outline">{agent.category}</Badge>
-              {agent.isFeatured && <Badge variant="default">精选</Badge>}
-            </div>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <span>By {agent.author.name} {agent.author.avatar}</span>
-              <span>•</span>
-              <span>版本 {agent.version}</span>
-              <span>•</span>
-              <span>创建于 {new Date(agent.createdAt).toLocaleDateString()}</span>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline">❤️ {agent.likes}</Button>
-            <Button>安装</Button>
-          </div>
-        </div>
-
-        <p className="text-lg text-muted-foreground mb-6">
-          {agent.description}
-        </p>
-
-        {/* 统计信息 */}
-        <div className="flex gap-8 text-sm">
-          <div>
-            <span className="font-semibold">{agent.views}</span>
-            <span className="text-muted-foreground"> 浏览</span>
-          </div>
-          <div>
-            <span className="font-semibold">{agent.installs}</span>
-            <span className="text-muted-foreground"> 安装</span>
-          </div>
-          <div>
-            <span className="font-semibold">{agent.likes}</span>
-            <span className="text-muted-foreground"> 点赞</span>
-          </div>
-        </div>
+    <div className="min-h-screen bg-background">
+      {/* 封面图 */}
+      <div className="h-64 w-full relative">
+        <img
+          src={mockAgent.ogImage || "/placeholder.jpg"}
+          alt={mockAgent.name}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
 
-      {/* 标签 */}
-      <div className="mb-8">
-        <div className="flex gap-2 flex-wrap">
-          {agent.tags.map((tag: string) => (
-            <Badge key={tag} variant="secondary">
-              #{tag}
-            </Badge>
-          ))}
-        </div>
-      </div>
-
-      {/* Prompt展示 */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Prompt</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <pre className="whitespace-pre-wrap text-sm bg-muted p-4 rounded-lg">
-            {agent.prompt}
-          </pre>
-        </CardContent>
-      </Card>
-
-      {/* 使用说明 */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>使用说明</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+      {/* 主要内容 */}
+      <div className="container py-8 -mt-16">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* 左侧：Agent 信息 */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* 标题和作者 */}
             <div>
-              <h3 className="font-semibold mb-2">1. 安装</h3>
-              <p className="text-sm text-muted-foreground">
-                点击"安装"按钮，将此Agent添加到你的工作空间。
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">2. 配置</h3>
-              <p className="text-sm text-muted-foreground">
-                根据你的需求调整Prompt参数，或使用默认配置。
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">3. 运行</h3>
-              <p className="text-sm text-muted-foreground">
-                输入你的需求，Agent会自动处理并返回结果。
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 版本历史 */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>版本历史</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-muted rounded">
-              <div>
-                <span className="font-semibold">v{agent.version}</span>
-                <span className="text-sm text-muted-foreground ml-2">当前版本</span>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {new Date(agent.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 作者信息 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>作者</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="text-4xl">{agent.author.avatar}</div>
-            <div>
-              <div className="font-semibold">{agent.author.name}</div>
-              <div className="text-sm text-muted-foreground">
-                发布了 {Math.floor(Math.random() * 20) + 5} 个Agent
+              <Badge variant="secondary" className="mb-2">
+                {mockAgent.category}
+              </Badge>
+              <h1 className="text-4xl font-bold">{mockAgent.name}</h1>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                  {mockAgent.author.avatar}
+                </div>
+                <div>
+                  <p className="font-medium">{mockAgent.author.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {mockAgent.author.bio}
+                  </p>
+                </div>
               </div>
             </div>
-            <Link href={`/profile/${agent.authorId}`}>
-              <Button variant="outline" size="sm">
-                查看主页
+
+            {/* 描述 */}
+            <div className="bg-muted/50 rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">关于此 Agent</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                {mockAgent.description}
+              </p>
+
+              <div className="mt-6 space-y-2">
+                <h3 className="font-semibold">标签</h3>
+                <div className="flex flex-wrap gap-2">
+                  {mockAgent.tags.split(",").map((tag, index) => (
+                    <Badge key={index} variant="outline">
+                      {tag.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Prompt */}
+            <div className="bg-card rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">Prompt</h2>
+              <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm font-mono whitespace-pre-wrap">
+                {mockAgent.prompt}
+              </pre>
+            </div>
+
+            {/* 操作按钮 */}
+            <div className="flex gap-4">
+              <Button size="lg">使用 Agent</Button>
+              <Button variant="outline" size="lg">
+                ❤️ 点赞
               </Button>
-            </Link>
+              <Button variant="outline" size="lg">
+                📥 收藏
+              </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* 右侧：统计信息 */}
+          <div className="space-y-6">
+            {/* 统计卡片 */}
+            <div className="bg-card rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">统计信息</h2>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">👁 浏览量</span>
+                  <span className="font-semibold">{mockAgent.views}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">❤️ 点赞</span>
+                  <span className="font-semibold">{mockAgent.likes}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">📥 安装</span>
+                  <span className="font-semibold">{mockAgent.installs}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">📝 版本</span>
+                  <span className="font-semibold">{mockAgent.version}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">🆕 发布时间</span>
+                  <span className="font-semibold text-sm">
+                    {new Date(mockAgent.createdAt).toLocaleDateString("zh-CN")}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">🔄 更新时间</span>
+                  <span className="font-semibold text-sm">
+                    {new Date(mockAgent.updatedAt).toLocaleDateString("zh-CN")}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 作者信息卡片 */}
+            <div className="bg-card rounded-lg p-6">
+              <h2 className="text-xl font-semibold mb-4">作者</h2>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-xl">
+                    {mockAgent.author.avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold">{mockAgent.author.name}</p>
+                    <p className="text-sm text-muted-foreground">开发者</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">📊 发布 Agents</span>
+                    <span className="font-semibold">3</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">🧩 发布 Skills</span>
+                    <span className="font-semibold">2</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">⭐ 总点赞</span>
+                    <span className="font-semibold">189</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">👁 总浏览</span>
+                    <span className="font-semibold">3456</span>
+                  </div>
+                </div>
+
+                <Button variant="outline" className="w-full mt-4">
+                  查看作者主页
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
