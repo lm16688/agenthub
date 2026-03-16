@@ -151,9 +151,11 @@ export default function SkillsPage() {
                   </span>
                 ))}
               </div>
-              <Button className="w-full" variant={skill.price ? "default" : "outline"}>
-                {skill.price ? "购买" : "免费安装"}
-              </Button>
+              <Link href={`/skills/${skill.id}`} className="w-full">
+                <Button className="w-full" variant={skill.price ? "default" : "outline"}>
+                  {skill.price ? "购买" : "免费安装"}
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ))}

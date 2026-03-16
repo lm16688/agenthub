@@ -1,272 +1,136 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
-interface Agent {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  category: string;
-  tags: string;
-  prompt: string;
-  version: string;
-  isPublic: boolean;
-  views: number;
-  likes: number;
-  installs: number;
-  authorId: string;
-  ogImage?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// 模拟数据
+const mockAgents = [
+  {
+    id: "1",
+    name: "Meme Coin Analyzer",
+    description: "智能分析pump.fun上的Meme币，基于社区活跃度和叙事强度筛选高潜力代币",
+    category: "加密货币",
+    author: " newborn",
+    likes: 128,
+    views: 1256,
+    tags: ["crypto", "meme", "analysis"],
+  },
+  {
+    id: "2",
+    name: "Content Writer",
+    description: "AI内容写作助手，支持多种风格和格式，帮助你快速创建高质量内容",
+    category: "内容创作",
+    author: "AI Assistant",
+    likes: 256,
+    views: 2341,
+    tags: ["writing", "content", "AI"],
+  },
+  {
+    id: "3",
+    name: "Code Reviewer",
+    description: "智能代码审查专家，分析代码质量，提供优化建议",
+    category: "开发工具",
+    author: "DevBot",
+    likes: 189,
+    views: 1876,
+    tags: ["code", "review", "development"],
+  },
+  {
+    id: "4",
+    name: "SEO Optimizer",
+    description: "SEO优化专家，关键词研究和内容优化建议",
+    category: "营销工具",
+    author: "SEO Bot",
+    likes: 145,
+    views: 1567,
+    tags: ["SEO", "marketing", "content"],
+  },
+  {
+    id: "5",
+    name: "Data Analyst",
+    description: "数据分析师，自动化数据清洗、分析和可视化",
+    category: "数据分析",
+    author: "DataBot",
+    likes: 210,
+    views: 2109,
+    tags: ["data", "analysis", "visualization"],
+  },
+];
 
 export default function AgentsPage() {
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [filteredAgents, setFilteredAgents] = useState<Agent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState<string>("all");
-  const [search, setSearch] = useState("");
-
-  // 分类选项
-  const categories = [
-    { value: "all", label: "全部" },
-    { value: "content", label: "内容创作" },
-    { value: "dev", label: "开发工具" },
-    { value: "data", label: "数据分析" },
-    { value: "crypto", label: "加密货币" },
-    { value: "nlp", label: "自然语言处理" },
-    { value: "cv", label: "计算机视觉" },
-    { value: "other", label: "其他" },
-  ];
-
-  // 获取 Agents
-  useEffect(() => {
-    fetchAgents();
-  }, []);
-
-  // 筛选和搜索
-  useEffect(() => {
-    let filtered = agents;
-
-    // 分类筛选
-    if (category !== "all") {
-      filtered = filtered.filter(agent => agent.category === category);
-    }
-
-    // 搜索筛选
-    if (search) {
-      filtered = filtered.filter(agent =>
-        agent.name.toLowerCase().includes(search.toLowerCase()) ||
-        agent.description.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    setFilteredAgents(filtered);
-  }, [agents, category, search]);
-
-  const fetchAgents = async () => {
-    try {
-      const response = await fetch("/api/agents");
-      const data = await response.json();
-      
-      if (data.success) {
-        setAgents(data.data);
-      }
-    } catch (error) {
-      console.error("获取 Agents 失败:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getCategoryLabel = (cat: string) => {
-    return categories.find(c => c.value === cat)?.label || cat;
-  };
-
-  const categoryColors: Record<string, string> = {
-    content: "bg-purple-100 text-purple-800",
-    dev: "bg-blue-100 text-blue-800",
-    data: "bg-green-100 text-green-800",
-    crypto: "bg-yellow-100 text-yellow-800",
-    nlp: "bg-pink-100 text-pink-800",
-    cv: "bg-indigo-100 text-indigo-800",
-    other: "bg-gray-100 text-gray-800",
-  };
-
   return (
-    <div className="container py-8 max-w-6xl">
+    <div className="container py-8">
       {/* 页面标题 */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">探索 Agents</h1>
-        <p className="text-muted-foreground mb-6">
-          发现和使用 AI Agents，或者发布你自己的作品
+        <h1 className="text-4xl font-bold mb-2">🤖 发现Agents</h1>
+        <p className="text-muted-foreground text-lg">
+          浏览和发现社区中的优质AI Agents
         </p>
-
-        {/* 搜索和筛选 */}
-        <div className="flex gap-4">
-          {/* 搜索框 */}
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="搜索 Agents..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          {/* 分类选择 */}
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            {categories.map(cat => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
-      {/* 加载状态 */}
-      {loading ? (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-4 text-muted-foreground">加载中...</p>
+      {/* 搜索和筛选 */}
+      <div className="mb-8 flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-[200px]">
+          <input
+            type="text"
+            placeholder="搜索Agents..."
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          />
         </div>
-      ) : (
-        <>
-          {/* 结果统计 */}
-          <div className="mb-4 text-sm text-muted-foreground">
-            显示 {filteredAgents.length} 个 Agent
-            {category !== "all" && (
-              <>
-                {" "}• {getCategoryLabel(category)}
-              </>
-            )}
-            {search && (
-              <>
-                {" "}• 搜索："{search}"
-              </>
-            )}
-          </div>
+        <select className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm">
+          <option value="">所有分类</option>
+          <option value="crypto">加密货币</option>
+          <option value="content">内容创作</option>
+          <option value="dev">开发工具</option>
+          <option value="marketing">营销工具</option>
+          <option value="data">数据分析</option>
+        </select>
+        <Button>搜索</Button>
+      </div>
 
-          {/* Agents 网格 */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredAgents.length === 0 ? (
-              <div className="col-span-full text-center py-12">
-                <div className="text-6xl mb-4">🔍</div>
-                <p className="text-muted-foreground">
-                  {search ? "没有找到匹配的 Agent" : "该分类还没有 Agent"}
-                </p>
+      {/* Agent列表 */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {mockAgents.map((agent) => (
+          <Card key={agent.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between mb-2">
+                <CardTitle className="text-xl">{agent.name}</CardTitle>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                  {agent.category}
+                </span>
               </div>
-            ) : (
-              filteredAgents.map((agent) => (
-                <Card key={agent.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  {/* Agent 封面图 */}
-                  {agent.ogImage && (
-                    <div className="aspect-video w-full bg-muted">
-                      <img
-                        src={agent.ogImage}
-                        alt={agent.name}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  )}
+              <CardDescription>{agent.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                <span>By {agent.author}</span>
+                <div className="flex gap-4">
+                  <span>👍 {agent.likes}</span>
+                  <span>👁️ {agent.views}</span>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap mb-4">
+                {agent.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs bg-muted px-2 py-1 rounded"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+              <Link href={`/agents/${agent.id}`} className="w-full">
+                <Button className="w-full" variant="outline">
+                  查看详情
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="hover:text-primary transition-colors">
-                          {agent.name}
-                        </CardTitle>
-                        <CardDescription className="mt-1 line-clamp-2">
-                          {agent.description}
-                        </CardDescription>
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className={categoryColors[agent.category] || "bg-gray-100 text-gray-800"}
-                      >
-                        {getCategoryLabel(agent.category)}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent>
-                    <div className="space-y-3">
-                      {/* 标签 */}
-                      <div className="flex flex-wrap gap-2">
-                        {agent.tags.split(",").slice(0, 3).map((tag, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {tag.trim()}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      {/* 统计信息 */}
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          👁 {agent.views}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          ❤️ {agent.likes}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          📥 {agent.installs}
-                        </span>
-                      </div>
-
-                      {/* 版本 */}
-                      <div className="text-xs text-muted-foreground">
-                        版本 {agent.version}
-                      </div>
-
-                      {/* 操作按钮 */}
-                      <div className="flex gap-2 pt-2">
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/agents/${agent.slug}`}>
-                            查看详情
-                          </Link>
-                        </Button>
-                        <Button size="sm" asChild>
-                          <Link href={`/agents/${agent.slug}`}>
-                            使用 Agent
-                          </Link>
-                        </Button>
-                      </div>
-                    {agent.ogImage && (
-                      <div className="mt-4">
-                        <img
-                          src={agent.ogImage}
-                          alt={agent.name}
-                          className="object-cover w-full h-48 rounded-md"
-                        />
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
-        </>
-      )}
-
-      {/* 发布按钮 */}
-      <div className="fixed bottom-8 right-8">
-        <Button size="lg" asChild>
-          <Link href="/publish">
-            <span className="mr-2">➕</span>
-            发布你的 Agent
-          </Link>
-        </Button>
+      {/* 加载更多 */}
+      <div className="mt-12 text-center">
+        <Button size="lg">加载更多</Button>
       </div>
     </div>
   );

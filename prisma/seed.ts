@@ -40,10 +40,10 @@ async function main() {
   console.log('✅ 创建用户:', user1.email)
 
   const user2 = await prisma.user.upsert({
-    where: { email: 'user2@test.com' },
+    where: { email: 'user2.1@test.com' },
     update: {},
     create: {
-      email: 'user2@test.com',
+      email: 'user2.1@test.com',
       name: '李四',
       password: userPassword,
       bio: '全栈工程师',

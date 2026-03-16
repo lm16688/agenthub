@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -88,10 +88,7 @@ export default function RegisterPage() {
                   请查收邮箱并点击验证链接
                 </p>
               </div>
-              <Button 
-                onClick={()={router.push("/login")}
-                className="w-full mt-6"
-              >
+              <Button onClick={() => router.push("/login")} className="w-full mt-6">
                 前往登录
               </Button>
             </div>

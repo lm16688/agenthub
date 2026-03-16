@@ -115,6 +115,7 @@ model Skill {
   downloads     Int       @default(0)
   rating        Float     @default(0)
   reviewCount   Int       @default(0)
+  likesCount    Int       @default(0)
 
   // 安装配置
   installConfig  String?   // 安装配置信息(JSON字符串)
@@ -126,6 +127,8 @@ model Skill {
   // 适用于哪些agent
   agents        Agent[]
   reviews       Review[]
+  bookmarks     Bookmark[]
+  likes         Like[]
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -163,10 +166,13 @@ model Like {
   agentId       String?
   agent         Agent?    @relation("AgentLikes", fields: [agentId], references: [id], onDelete: Cascade)
 
+  skillId       String?
+  skill         Skill?    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
   createdAt     DateTime  @default(now())
 
-  @@unique([userId, agentId])
   @@index([agentId])
+  @@index([skillId])
 }
 
 // 收藏表
@@ -179,10 +185,13 @@ model Bookmark {
   agentId       String?
   agent         Agent?    @relation(fields: [agentId], references: [id], onDelete: Cascade)
 
+  skillId       String?
+  skill         Skill?    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
   createdAt     DateTime  @default(now())
 
-  @@unique([userId, agentId])
   @@index([agentId])
+  @@index([skillId])
 }
 
 // NextAuth.js Account表
